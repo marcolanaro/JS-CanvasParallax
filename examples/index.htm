@@ -1,0 +1,105 @@
+<html>
+<head>
+</head>
+<body style="margin:0px;">
+<canvas id="canvas" width="900" height="640"></canvas>
+<div id="p"></div>
+<script src="../src/canvasParallax.js"></script>
+<script>
+	var width = 900;
+	var height = 640;
+	var canvas = document.getElementById('canvas');
+	var ctx = canvas.getContext('2d');
+	var layer0 = new Image();
+	layer0.src = "img/0.png";
+	var layer1 = new Image();
+	layer1.src = "img/1.png";
+	var layer2 = new Image();
+	layer2.src = "img/2.png";
+	var layer3 = new Image();
+	layer3.src = "img/3.png";
+	layer0.width=992;
+	layer0.height=640;
+	layer1.width=1185;
+	layer1.height=325;
+	layer2.width=1216;
+	layer2.height=155;
+	layer3.width=1280;
+	layer3.height=220;
+
+	var obj = {
+		canvas: {
+			width: width,
+			height: height,
+			context: ctx
+		},
+		layers: [
+			{image:layer0,offset:{x:0,y:0}},
+			{image:layer1,offset:{x:0,y:185}},
+			{image:layer2,offset:{x:0,y:380}},
+			{image:layer3,offset:{x:0,y:420}}
+		],
+		velocity: {x:1,y:0}
+	};
+
+	var cp = new CanvasParallax(obj);
+	var mouse = {x:0,y:0};
+
+	canvas.addEventListener("mousedown",mousedown,false);
+	canvas.addEventListener("mouseup",mouseup,false);
+	canvas.addEventListener("mouseout",mouseout,false);
+	canvas.addEventListener("mouseover",mouseover,false);
+	canvas.addEventListener("mousemove",mousemove,false);
+
+	setInterval(draw, 25);
+
+	var canvas_sun = document.createElement("canvas");
+	canvas_sun.width=100;
+	canvas_sun.height=100;
+	var ctx_sun = canvas_sun.getContext("2d");
+	var i=0;
+
+	function sun() {
+		i += 1;
+		var s=i%400;
+		if (s>200)s=400-s;
+		var green = 255-s;
+		ctx_sun.fillStyle = "rgb(255,"+green+",0)";
+		ctx_sun.arc(50,50,50,0,2*Math.PI,true);
+		ctx_sun.fill();
+
+	}
+
+	function draw() {
+		ctx.clearRect(0,0,width,height);
+		cp.draw(mouse,[
+			[
+				{x:300,y:200,image:canvas_sun}
+			]
+		]);
+		sun();
+	}
+
+	function mousedown(e) {
+		//cp.start({x:e.clientX,y:e.clientY});
+	}
+
+	function mouseup() {
+		//cp.stop();
+	}
+
+	function mouseover(e) {
+		cp.start({x:e.clientX,y:e.clientY});
+	}
+
+	function mouseout(e) {
+		cp.stop();
+	}
+
+	function mousemove(e) {
+		mouse = {x:e.clientX,y:e.clientY};
+	}
+
+</script>
+</body>
+</html>
